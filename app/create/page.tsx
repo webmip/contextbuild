@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -26,10 +26,11 @@ type Step = {
   fields: {
     id: string
     label: string
-    type: "text" | "textarea" | "select" | "password" | "switch"
+    type: "text" | "textarea" | "select" | "password" | "switch" | "multiselect"
     placeholder?: string
     options?: { value: string; label: string }[]
     description?: string
+    allowCustom?: boolean
   }[]
 }
 
@@ -54,8 +55,19 @@ const steps: Step[] = [
       {
         id: "targetAudience",
         label: "Target Audience",
-        type: "text",
+        type: "multiselect",
         placeholder: "Who will use your application?",
+        options: [
+          { value: "developers", label: "Developers" },
+          { value: "designers", label: "Designers" },
+          { value: "business-users", label: "Business Users" },
+          { value: "general-consumers", label: "General Consumers" },
+          { value: "enterprise", label: "Enterprise" },
+          { value: "students", label: "Students" },
+          { value: "educators", label: "Educators" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
     ],
   },
@@ -73,8 +85,22 @@ const steps: Step[] = [
       {
         id: "keyInteractions",
         label: "Key Interactions",
-        type: "textarea",
-        placeholder: "List the main actions users will take (e.g., login, create content, search)...",
+        type: "multiselect",
+        placeholder: "Select the main actions users will take in your app",
+        options: [
+          { value: "login-signup", label: "Login/Signup" },
+          { value: "search", label: "Search" },
+          { value: "create-content", label: "Create Content" },
+          { value: "edit-content", label: "Edit Content" },
+          { value: "delete-content", label: "Delete Content" },
+          { value: "share-content", label: "Share Content" },
+          { value: "filter-sort", label: "Filter/Sort" },
+          { value: "notifications", label: "Receive Notifications" },
+          { value: "payments", label: "Make Payments" },
+          { value: "user-profile", label: "Manage User Profile" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
     ],
   },
@@ -86,20 +112,68 @@ const steps: Step[] = [
       {
         id: "frontend",
         label: "Frontend Technologies",
-        type: "textarea",
-        placeholder: "List frontend frameworks, libraries, and tools (e.g., React, Next.js, Tailwind CSS)...",
+        type: "multiselect",
+        placeholder: "Select frontend frameworks, libraries, and tools",
+        options: [
+          { value: "react", label: "React" },
+          { value: "next-js", label: "Next.js" },
+          { value: "vue", label: "Vue.js" },
+          { value: "angular", label: "Angular" },
+          { value: "svelte", label: "Svelte" },
+          { value: "tailwind", label: "Tailwind CSS" },
+          { value: "bootstrap", label: "Bootstrap" },
+          { value: "material-ui", label: "Material UI" },
+          { value: "typescript", label: "TypeScript" },
+          { value: "javascript", label: "JavaScript" },
+          { value: "redux", label: "Redux" },
+          { value: "zustand", label: "Zustand" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
       {
         id: "backend",
         label: "Backend Technologies",
-        type: "textarea",
-        placeholder: "List backend frameworks, libraries, and tools (e.g., Node.js, Express, Prisma)...",
+        type: "multiselect",
+        placeholder: "Select backend frameworks, libraries, and tools",
+        options: [
+          { value: "node-js", label: "Node.js" },
+          { value: "express", label: "Express" },
+          { value: "nest-js", label: "NestJS" },
+          { value: "django", label: "Django" },
+          { value: "flask", label: "Flask" },
+          { value: "ruby-on-rails", label: "Ruby on Rails" },
+          { value: "spring-boot", label: "Spring Boot" },
+          { value: "asp-net", label: "ASP.NET" },
+          { value: "laravel", label: "Laravel" },
+          { value: "go", label: "Go" },
+          { value: "rust", label: "Rust" },
+          { value: "php", label: "PHP" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
       {
         id: "apis",
         label: "APIs & External Services",
-        type: "textarea",
-        placeholder: "List any external APIs or services you'll integrate with...",
+        type: "multiselect",
+        placeholder: "Select any external APIs or services you'll integrate with",
+        options: [
+          { value: "rest-api", label: "REST API" },
+          { value: "graphql", label: "GraphQL" },
+          { value: "auth0", label: "Auth0" },
+          { value: "firebase", label: "Firebase" },
+          { value: "aws", label: "AWS Services" },
+          { value: "google-cloud", label: "Google Cloud" },
+          { value: "azure", label: "Azure" },
+          { value: "stripe", label: "Stripe" },
+          { value: "twilio", label: "Twilio" },
+          { value: "sendgrid", label: "SendGrid" },
+          { value: "algolia", label: "Algolia" },
+          { value: "openai", label: "OpenAI API" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
     ],
   },
@@ -136,20 +210,59 @@ const steps: Step[] = [
       {
         id: "colorPalette",
         label: "Color Palette",
-        type: "textarea",
-        placeholder: "Describe your color scheme (primary, secondary, accent colors)...",
+        type: "multiselect",
+        placeholder: "Select color themes for your application",
+        options: [
+          { value: "blue-gray", label: "Blue & Gray (Corporate)" },
+          { value: "green-earth", label: "Green & Earth Tones (Eco/Natural)" },
+          { value: "purple-pink", label: "Purple & Pink (Creative)" },
+          { value: "red-orange", label: "Red & Orange (Energetic)" },
+          { value: "black-white", label: "Black & White (Minimalist)" },
+          { value: "pastel", label: "Pastel Colors (Soft/Friendly)" },
+          { value: "dark-mode", label: "Dark Mode" },
+          { value: "light-mode", label: "Light Mode" },
+          { value: "high-contrast", label: "High Contrast (Accessibility)" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or describe your custom palette",
       },
       {
         id: "typography",
         label: "Typography",
-        type: "textarea",
-        placeholder: "Describe the fonts and text styles you'll use...",
+        type: "multiselect",
+        placeholder: "Select typography styles for your application",
+        options: [
+          { value: "sans-serif", label: "Sans-serif (Modern, clean)" },
+          { value: "serif", label: "Serif (Traditional, authoritative)" },
+          { value: "monospace", label: "Monospace (Technical, precise)" },
+          { value: "display", label: "Display fonts (Decorative, unique)" },
+          { value: "system-fonts", label: "System fonts (Native look)" },
+          { value: "variable-fonts", label: "Variable fonts (Responsive)" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or describe your custom typography",
       },
       {
         id: "uiComponents",
         label: "UI Components",
-        type: "textarea",
-        placeholder: "List key UI components and their styling (buttons, cards, forms)...",
+        type: "multiselect",
+        placeholder: "Select key UI components for your application",
+        options: [
+          { value: "cards", label: "Cards" },
+          { value: "tables", label: "Tables" },
+          { value: "forms", label: "Forms" },
+          { value: "buttons", label: "Buttons" },
+          { value: "modals", label: "Modals/Dialogs" },
+          { value: "tabs", label: "Tabs" },
+          { value: "accordions", label: "Accordions" },
+          { value: "navigation", label: "Navigation menus" },
+          { value: "sliders", label: "Sliders/Carousels" },
+          { value: "tooltips", label: "Tooltips" },
+          { value: "dropdowns", label: "Dropdowns" },
+          { value: "progress", label: "Progress indicators" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
     ],
   },
@@ -167,8 +280,20 @@ const steps: Step[] = [
       {
         id: "authentication",
         label: "Authentication & Authorization",
-        type: "textarea",
-        placeholder: "Describe how users will authenticate and what permission levels exist...",
+        type: "multiselect",
+        placeholder: "Select authentication methods for your application",
+        options: [
+          { value: "email-password", label: "Email & Password" },
+          { value: "social-login", label: "Social Login (Google, Facebook, etc.)" },
+          { value: "sso", label: "Single Sign-On (SSO)" },
+          { value: "oauth", label: "OAuth 2.0" },
+          { value: "jwt", label: "JWT Tokens" },
+          { value: "mfa", label: "Multi-factor Authentication" },
+          { value: "rbac", label: "Role-based Access Control" },
+          { value: "passwordless", label: "Passwordless (Magic links, etc.)" },
+        ],
+        allowCustom: true,
+        description: "Select all that apply or add your own",
       },
     ],
   },
@@ -246,7 +371,22 @@ const generateMarkdown = (
       const field = steps.find((s) => s.id === section.id)?.fields.find((f) => f.id === key)
       if (!field || field.type === "password" || field.type === "switch" || key === "aiProvider") return
 
-      markdown += `### ${field.label}\n\n${value || "No information provided."}\n\n`
+      markdown += `### ${field.label}\n\n`
+      
+      // Dar formato especial a los campos multiselect
+      if (field.type === "multiselect" && value) {
+        const items = value.split(",").filter(item => item.trim() !== "");
+        if (items.length > 0) {
+          items.forEach(item => {
+            markdown += `- ${item}\n`;
+          });
+          markdown += "\n";
+        } else {
+          markdown += "No information provided.\n\n";
+        }
+      } else {
+        markdown += `${value || "No information provided."}\n\n`;
+      }
     })
 
     // Add implementation steps for the implementation plan
@@ -703,6 +843,17 @@ export default function CreatePage() {
                           </SelectContent>
                         </Select>
                       )}
+
+                      {field.type === "multiselect" && (
+                        <MultiSelect
+                          id={field.id}
+                          options={field.options || []}
+                          placeholder={field.placeholder}
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          allowCustom={field.allowCustom}
+                          onChange={(value) => handleInputChange(currentStepData.id, field.id, value)}
+                        />
+                      )}
                     </>
                   )}
                 </div>
@@ -929,5 +1080,138 @@ function DocumentPreview({
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+// Ahora añadimos el componente MultiSelect para manejar la selección múltiple con opción personalizada
+const MultiSelect = ({
+  id,
+  options,
+  placeholder,
+  value,
+  allowCustom = false,
+  onChange,
+}: {
+  id: string
+  options: { value: string; label: string }[]
+  placeholder?: string
+  value: string
+  allowCustom?: boolean
+  onChange: (value: string) => void
+}) => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+  const [customOption, setCustomOption] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const initializedRef = useRef(false)
+
+  // Solo inicializar las opciones seleccionadas una vez al montar el componente
+  // o cuando cambia el valor externamente
+  useEffect(() => {
+    if (value) {
+      const selectedValues = value.split(",").filter(val => val.trim() !== "")
+      setSelectedOptions(selectedValues)
+    } else {
+      setSelectedOptions([])
+    }
+    initializedRef.current = true;
+  }, [value])
+
+  const handleOptionSelect = (option: string) => {
+    const newSelectedOptions = selectedOptions.includes(option)
+      ? selectedOptions.filter((o) => o !== option)
+      : [...selectedOptions, option];
+    
+    setSelectedOptions(newSelectedOptions);
+    // Actualizar el valor directamente aquí para evitar el efecto adicional
+    onChange(newSelectedOptions.join(","));
+  }
+
+  const handleCustomOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomOption(e.target.value)
+  }
+
+  const handleAddCustomOption = () => {
+    if (customOption.trim() !== "") {
+      const newSelectedOptions = [...selectedOptions, customOption.trim()];
+      setSelectedOptions(newSelectedOptions);
+      setCustomOption("");
+      inputRef.current?.focus();
+      // Actualizar el valor directamente aquí para evitar el efecto adicional
+      onChange(newSelectedOptions.join(","));
+    }
+  }
+
+  const handleRemoveOption = (option: string) => {
+    const newSelectedOptions = selectedOptions.filter((o) => o !== option);
+    setSelectedOptions(newSelectedOptions);
+    // Actualizar el valor directamente aquí para evitar el efecto adicional
+    onChange(newSelectedOptions.join(","));
+  }
+
+  // Eliminamos este efecto que causaba el bucle infinito
+  // useEffect(() => {
+  //   const selectedValues = selectedOptions.join(",")
+  //   onChange(selectedValues)
+  // }, [selectedOptions, onChange])
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-wrap gap-2 mb-2">
+        {selectedOptions.map((option) => (
+          <div key={option} className="bg-primary/10 px-2 py-1 rounded-md text-sm font-medium text-primary">
+            {option}
+            <button
+              type="button"
+              className="ml-2 text-xs text-primary hover:text-primary/80"
+              onClick={() => handleRemoveOption(option)}
+            >
+              x
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <Select
+          value=""
+          onValueChange={handleOptionSelect}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder={placeholder || "Select options"} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {allowCustom && (
+          <div className="flex items-center gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={customOption}
+              onChange={handleCustomOptionChange}
+              placeholder="Add custom option"
+              className="w-full border rounded-md p-2 text-sm"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddCustomOption();
+                }
+              }}
+            />
+            <button 
+              type="button"
+              className="text-sm text-primary hover:text-primary/80" 
+              onClick={handleAddCustomOption}
+            >
+              Add
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
