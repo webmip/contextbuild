@@ -124,16 +124,8 @@ export default function Home() {
       <footer className="border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © {new Date().getFullYear()} CONTEXTBUILD. All rights reserved.
+            © {new Date().getFullYear()} CONTEXTBUILD. Made with ❤️ to save AI tokens.
           </p>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Privacy
-            </Link>
-            <Link href="/terms" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Terms
-            </Link>
-          </div>
         </div>
       </footer>
     </div>
