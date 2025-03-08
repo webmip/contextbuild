@@ -705,15 +705,6 @@ export default function CreatePage() {
                     </AlertDescription>
                   </Alert>
 
-                  <Alert variant="warning" className="mt-4">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Development Environment</AlertTitle>
-                    <AlertDescription>
-                      This application is running in a development environment. In a production environment, API keys
-                      would be handled more securely through server-side processing.
-                    </AlertDescription>
-                  </Alert>
-
                   <div className="mt-4 p-4 border rounded bg-muted/20">
                     <h4 className="text-sm font-medium mb-2">Debug Information</h4>
                     <p className="text-xs text-muted-foreground">
