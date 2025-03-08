@@ -35,36 +35,6 @@ type Step = {
 
 const steps: Step[] = [
   {
-    id: "ai-integration",
-    title: "AI Integration (Optional)",
-    description: "Enhance your documentation with AI-powered generation",
-    fields: [
-      {
-        id: "useAI",
-        label: "Use AI to enhance documentation",
-        type: "switch",
-        description: "Generate more comprehensive and detailed documentation using AI",
-      },
-      {
-        id: "aiProvider",
-        label: "AI Provider",
-        type: "select",
-        options: [
-          { value: "openai", label: "OpenAI (GPT-4)" },
-          { value: "anthropic", label: "Anthropic (Claude)" },
-        ],
-        description: "Select which AI provider to use for document generation",
-      },
-      {
-        id: "apiKey",
-        label: "API Key",
-        type: "password",
-        placeholder: "Enter your API key",
-        description: "Your API key will only be stored in memory and will be removed after document generation",
-      },
-    ],
-  },
-  {
     id: "project-basics",
     title: "Project Basics",
     description: "Let's start with the fundamental details of your project",
@@ -199,6 +169,36 @@ const steps: Step[] = [
         label: "Authentication & Authorization",
         type: "textarea",
         placeholder: "Describe how users will authenticate and what permission levels exist...",
+      },
+    ],
+  },
+  {
+    id: "ai-integration",
+    title: "AI Integration (Optional)",
+    description: "Enhance your documentation with AI-powered generation",
+    fields: [
+      {
+        id: "useAI",
+        label: "Use AI to enhance documentation",
+        type: "switch",
+        description: "Generate more comprehensive and detailed documentation using AI",
+      },
+      {
+        id: "aiProvider",
+        label: "AI Provider",
+        type: "select",
+        options: [
+          { value: "openai", label: "OpenAI (GPT-4)" },
+          { value: "anthropic", label: "Anthropic (Claude)" },
+        ],
+        description: "Select which AI provider to use for document generation",
+      },
+      {
+        id: "apiKey",
+        label: "API Key",
+        type: "password",
+        placeholder: "Enter your API key",
+        description: "Your API key will only be stored in memory and will be removed after document generation",
       },
     ],
   },
@@ -629,7 +629,14 @@ export default function CreatePage() {
               {currentStepData.fields.map((field) => (
                 <div key={field.id} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor={field.id}>{field.label}</Label>
+                    <Label htmlFor={field.id} className="flex items-center">
+                      {field.label}
+                      {currentStepData.id === "ai-integration" && field.id === "useAI" && (
+                        <span className="ml-2 inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">
+                          Recommended
+                        </span>
+                      )}
+                    </Label>
                     {field.type === "switch" && (
                       <Switch
                         id={field.id}
@@ -645,56 +652,63 @@ export default function CreatePage() {
 
                   {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
 
-                  {field.type === "textarea" && (
-                    <Textarea
-                      id={field.id}
-                      placeholder={field.placeholder}
-                      rows={5}
-                      value={formData[currentStepData.id]?.[field.id] || ""}
-                      onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
-                    />
-                  )}
+                  {/* Solo mostrar los campos de AI Provider y API Key si useAI está activado */}
+                  {currentStepData.id === "ai-integration" && 
+                   ((field.id === "aiProvider" || field.id === "apiKey") && 
+                    formData["ai-integration"]?.useAI !== "true") ? null : (
+                    <>
+                      {field.type === "textarea" && (
+                        <Textarea
+                          id={field.id}
+                          placeholder={field.placeholder}
+                          rows={5}
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
+                        />
+                      )}
 
-                  {field.type === "text" && (
-                    <Input
-                      id={field.id}
-                      placeholder={field.placeholder}
-                      value={formData[currentStepData.id]?.[field.id] || ""}
-                      onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
-                    />
-                  )}
+                      {field.type === "text" && (
+                        <Input
+                          id={field.id}
+                          placeholder={field.placeholder}
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
+                        />
+                      )}
 
-                  {field.type === "password" && (
-                    <Input
-                      id={field.id}
-                      type="password"
-                      placeholder={field.placeholder}
-                      value={formData[currentStepData.id]?.[field.id] || ""}
-                      onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
-                    />
-                  )}
+                      {field.type === "password" && (
+                        <Input
+                          id={field.id}
+                          type="password"
+                          placeholder={field.placeholder}
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          onChange={(e) => handleInputChange(currentStepData.id, field.id, e.target.value)}
+                        />
+                      )}
 
-                  {field.type === "select" && (
-                    <Select
-                      value={formData[currentStepData.id]?.[field.id] || ""}
-                      onValueChange={(value) => handleInputChange(currentStepData.id, field.id, value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {field.options?.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      {field.type === "select" && (
+                        <Select
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          onValueChange={(value) => handleInputChange(currentStepData.id, field.id, value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select an option" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {field.options?.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </>
                   )}
                 </div>
               ))}
 
-              {currentStep === 0 && (
+              {currentStepData.id === "ai-integration" && (
                 <>
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
@@ -917,4 +931,3 @@ function DocumentPreview({
     </Card>
   )
 }
-
