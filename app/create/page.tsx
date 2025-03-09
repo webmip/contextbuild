@@ -870,18 +870,6 @@ export default function CreatePage() {
                     </AlertDescription>
                   </Alert>
 
-                  <div className="mt-4 p-4 border rounded bg-muted/20">
-                    <h4 className="text-sm font-medium mb-2">Debug Information</h4>
-                    <p className="text-xs text-muted-foreground">
-                      AI Generation: {formData["ai-integration"]?.useAI === "true" ? "Enabled" : "Disabled"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Provider: {formData["ai-integration"]?.aiProvider || "Not selected"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      API Key: {formData["ai-integration"]?.apiKey ? "Provided" : "Not provided"}
-                    </p>
-                  </div>
                 </>
               )}
 
