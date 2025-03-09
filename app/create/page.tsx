@@ -844,8 +844,19 @@ export default function CreatePage() {
                         </Select>
                       )}
 
-                      {field.type === "multiselect" && (
+                      {field.type === "multiselect" && currentStepData.id !== "tech-stack" && (
                         <MultiSelect
+                          id={field.id}
+                          options={field.options || []}
+                          placeholder={field.placeholder}
+                          value={formData[currentStepData.id]?.[field.id] || ""}
+                          allowCustom={field.allowCustom}
+                          onChange={(value) => handleInputChange(currentStepData.id, field.id, value)}
+                        />
+                      )}
+
+                      {field.type === "multiselect" && currentStepData.id === "tech-stack" && (
+                        <TagSelect
                           id={field.id}
                           options={field.options || []}
                           placeholder={field.placeholder}
@@ -1200,6 +1211,136 @@ const MultiSelect = ({
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// Componente TagSelect para mostrar opciones como etiquetas seleccionables
+const TagSelect = ({
+  id,
+  options,
+  placeholder,
+  value,
+  allowCustom = false,
+  onChange,
+}: {
+  id: string
+  options: { value: string; label: string }[]
+  placeholder?: string
+  value: string
+  allowCustom?: boolean
+  onChange: (value: string) => void
+}) => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+  const [customOption, setCustomOption] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const initializedRef = useRef(false)
+
+  // Inicializar las opciones seleccionadas
+  useEffect(() => {
+    if (value) {
+      const selectedValues = value.split(",").filter(val => val.trim() !== "")
+      setSelectedOptions(selectedValues)
+    } else {
+      setSelectedOptions([])
+    }
+    initializedRef.current = true;
+  }, [value])
+
+  const handleOptionSelect = (option: string) => {
+    const newSelectedOptions = selectedOptions.includes(option)
+      ? selectedOptions.filter((o) => o !== option)
+      : [...selectedOptions, option];
+    
+    setSelectedOptions(newSelectedOptions);
+    onChange(newSelectedOptions.join(","));
+  }
+
+  const handleCustomOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomOption(e.target.value)
+  }
+
+  const handleAddCustomOption = () => {
+    if (customOption.trim() !== "") {
+      const newSelectedOptions = [...selectedOptions, customOption.trim()];
+      setSelectedOptions(newSelectedOptions);
+      setCustomOption("");
+      inputRef.current?.focus();
+      onChange(newSelectedOptions.join(","));
+    }
+  }
+
+  const handleRemoveOption = (option: string) => {
+    const newSelectedOptions = selectedOptions.filter((o) => o !== option);
+    setSelectedOptions(newSelectedOptions);
+    onChange(newSelectedOptions.join(","));
+  }
+
+  return (
+    <div className="flex flex-col space-y-4">
+      <div className="flex flex-wrap gap-2 mb-2">
+        {selectedOptions.map((option) => (
+          <div key={option} className="bg-primary/10 px-3 py-1.5 rounded-full text-sm font-medium text-primary flex items-center">
+            {option}
+            <button
+              type="button"
+              className="ml-2 text-xs text-primary hover:text-primary/80 h-4 w-4 rounded-full flex items-center justify-center"
+              onClick={() => handleRemoveOption(option)}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => handleOptionSelect(option.value)}
+            className={`
+              px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              flex items-center gap-1.5
+              ${selectedOptions.includes(option.value) 
+                ? 'bg-primary text-primary-foreground' 
+                : 'bg-muted hover:bg-muted/80 text-muted-foreground'}
+            `}
+          >
+            {!selectedOptions.includes(option.value) && (
+              <span className="text-xs font-bold">+</span>
+            )}
+            {option.label}
+          </button>
+        ))}
+      </div>
+      
+      {allowCustom && (
+        <div className="flex items-center gap-2 mt-2">
+          <input
+            ref={inputRef}
+            type="text"
+            value={customOption}
+            onChange={handleCustomOptionChange}
+            placeholder="Add custom option"
+            className="flex-1 border rounded-md p-2 text-sm"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleAddCustomOption();
+              }
+            }}
+          />
+          <button 
+            type="button"
+            className="px-3 py-1.5 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-1" 
+            onClick={handleAddCustomOption}
+          >
+            <span className="text-xs font-bold">+</span>
+            Add
+          </button>
+        </div>
+      )}
     </div>
   )
 }
