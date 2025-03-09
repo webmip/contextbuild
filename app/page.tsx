@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowRight, FileText } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LogoCarousel } from "@/components/logo-carousel"
 
 export default function Home() {
   return (
@@ -69,6 +70,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <LogoCarousel />
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/50">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">

@@ -1,4 +1,6 @@
 @tailwind base;
+
+@custom-variant dark (&:is(.dark *));
 @tailwind components;
 @tailwind utilities;
 
@@ -95,5 +97,29 @@ html:not(.dark) .prose h6 {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+:root {
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+}
+
+.dark {
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+}
+
+@theme inline {
+  --color-sky-400: var(----sky-400);
+  --color-sky-500: var(----sky-500);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
