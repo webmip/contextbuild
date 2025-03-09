@@ -10,21 +10,6 @@ export default function HowToUsePage() {
       <Header />
       
       <div className="container py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">How to Use</h1>
-            <p className="mt-2 text-muted-foreground">
-              A step-by-step guide to get the most out of ContextBuild
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-              </Button>
-            </Link>
-          </div>
-        </div>
 
         <div className="grid gap-8">
           <section>
@@ -41,7 +26,7 @@ export default function HowToUsePage() {
               </div>
               <div className="rounded-lg overflow-hidden border bg-card shadow-sm">
                 <img 
-                  src="/how-to-use-hero.svg" 
+                  src="/projectDocs.png" 
                   alt="ContextBuild workflow illustration" 
                   className="w-full h-auto"
                   style={{ opacity: 0.85 }}
