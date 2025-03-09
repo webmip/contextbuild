@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, BookOpen, Code, FileText, Lightbulb, Sparkles } from "lucide-react"
+import { ArrowLeft, BookOpen, Code, FileText, Lightbulb, Sparkles, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { SplineSceneBasic } from "@/components/ui/spline-scene-demo"
@@ -100,31 +100,18 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">How It Works</h2>
-            <div className="prose max-w-none">
-              <ol>
-                <li>
-                  <strong>Answer Questions</strong>: Our guided questionnaire walks you through all aspects of your
-                  project, from basic information to technical details.
-                </li>
-                <li>
-                  <strong>Generate Documents</strong>: Based on your answers, we automatically generate a complete set of
-                  documentation tailored to your project.
-                </li>
-                <li>
-                  <strong>Review & Export</strong>: Review the generated documents, make any necessary adjustments, and
-                  export them in your preferred format.
-                </li>
-                <li>
-                  <strong>Use with AI Tools</strong>: Provide these documents to AI coding tools like Cursor, Lovable, or
-                  V0 to guide their implementation.
-                </li>
-              </ol>
-              <p>
-                By following this process, you'll create a comprehensive set of documentation that serves as a clear
-                roadmap for AI coding tools, ensuring they implement exactly what you need.
+          <section className="mt-10 mb-16">
+            <div className="rounded-lg border bg-card p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">Want to Learn How to Use ContextBuild?</h2>
+              <p className="mb-6 max-w-2xl mx-auto">
+                Visit our detailed guide to learn how to create perfect context documents for AI coding assistants, 
+                save tokens, and maximize your productivity with step-by-step instructions.
               </p>
+              <Link href="/how-to-use">
+                <Button size="lg" className="gap-2">
+                  View How to Use Guide <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </section>
         </div>

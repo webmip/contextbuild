@@ -10,6 +10,8 @@ import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/logo"
+import { Header } from "@/components/header"
+import { ShieldCheck } from "lucide-react"
 
 type Template = {
   name: string
@@ -107,96 +109,107 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="container py-10">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <Logo />
-          <p className="text-muted-foreground mt-2">
-            Load a previously saved template to quickly create new documentation
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <Link href="/">
-            <Button variant="outline">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-pulse flex flex-col items-center">
-            <div className="h-12 w-12 rounded-full bg-primary/20 mb-4"></div>
-            <div className="h-4 w-32 bg-muted rounded"></div>
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      
+      <div className="container py-10">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl">Templates</h1>
+            <p className="text-muted-foreground mt-2">
+              Load a previously saved template to quickly create new documentation
+            </p>
           </div>
-        </div>
-      ) : templates.length === 0 ? (
-        <div className="py-12">
-          <Alert>
-            <FileText className="h-4 w-4" />
-            <AlertTitle>No Templates Found</AlertTitle>
-            <AlertDescription>
-              You haven&apos;t saved any templates yet. Create a new document and save it as a template to see it here.
-            </AlertDescription>
-          </Alert>
-          <div className="flex justify-center mt-8">
-            <Link href="/create">
-              <Button>
-                <FileText className="mr-2 h-4 w-4" /> Create New Document
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <Button variant="outline">
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
               </Button>
             </Link>
           </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templates.map((template, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle>{template.name}</CardTitle>
-                <CardDescription className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>Created on {formatDate(template.createdAt)}</span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div>
-                    <span className="text-sm font-medium">Project Type:</span>
-                    <span className="text-sm ml-2 text-muted-foreground">
-                      {template.data["project-basics"]?.projectType || "Not specified"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium">Target Audience:</span>
-                    <span className="text-sm ml-2 text-muted-foreground">
-                      {template.data["project-basics"]?.targetAudience || "Not specified"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium">Tech Stack:</span>
-                    <span className="text-sm ml-2 text-muted-foreground">
-                      {template.data["tech-stack"]?.frontend
-                        ? template.data["tech-stack"].frontend.split("\n")[0] + "..."
-                        : "Not specified"}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" size="sm" onClick={() => handleDeleteTemplate(index, template.name)}>
-                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+
+        <Alert className="mb-6">
+          <ShieldCheck className="h-4 w-4" />
+          <AlertTitle>Your data stays in your browser</AlertTitle>
+          <AlertDescription>
+            For your security, all templates are stored only in your browser's local storage and are never sent to our servers.
+            No data is collected or transmitted when you save or use templates.
+          </AlertDescription>
+        </Alert>
+
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="h-12 w-12 rounded-full bg-primary/20 mb-4"></div>
+              <div className="h-4 w-32 bg-muted rounded"></div>
+            </div>
+          </div>
+        ) : templates.length === 0 ? (
+          <div className="py-12">
+            <Alert>
+              <FileText className="h-4 w-4" />
+              <AlertTitle>No Templates Found</AlertTitle>
+              <AlertDescription>
+                You haven&apos;t saved any templates yet. Create a new document and save it as a template to see it here.
+              </AlertDescription>
+            </Alert>
+            <div className="flex justify-center mt-8">
+              <Link href="/create">
+                <Button>
+                  <FileText className="mr-2 h-4 w-4" /> Create New Document
                 </Button>
-                <Button size="sm" onClick={() => handleUseTemplate(template)}>
-                  <Download className="mr-2 h-4 w-4" /> Use Template
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      )}
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {templates.map((template, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle>{template.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    <span>Created on {formatDate(template.createdAt)}</span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-sm font-medium">Project Type:</span>
+                      <span className="text-sm ml-2 text-muted-foreground">
+                        {template.data["project-basics"]?.projectType || "Not specified"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Target Audience:</span>
+                      <span className="text-sm ml-2 text-muted-foreground">
+                        {template.data["project-basics"]?.targetAudience || "Not specified"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Tech Stack:</span>
+                      <span className="text-sm ml-2 text-muted-foreground">
+                        {template.data["tech-stack"]?.frontend
+                          ? template.data["tech-stack"].frontend.split("\n")[0] + "..."
+                          : "Not specified"}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline" size="sm" onClick={() => handleDeleteTemplate(index, template.name)}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                  </Button>
+                  <Button size="sm" onClick={() => handleUseTemplate(template)}>
+                    <Download className="mr-2 h-4 w-4" /> Use Template
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
-

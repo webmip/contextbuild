@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" rx="12" fill="#f8f9fa" />
+  
+  <!-- Document Icons and Flow -->
+  <g transform="translate(100, 50)">
+    <!-- Form Icon -->
+    <rect x="0" y="0" width="120" height="160" rx="8" fill="#e9ecef" stroke="#ced4da" stroke-width="2"/>
+    <rect x="20" y="30" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="20" y="50" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="20" y="70" width="60" height="10" rx="2" fill="#6c757d"/>
+    <rect x="20" y="90" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="20" y="110" width="40" height="10" rx="2" fill="#6c757d"/>
+    
+    <!-- Arrow 1 -->
+    <path d="M140 80 L200 80" stroke="#adb5bd" stroke-width="2"/>
+    <polygon points="200,80 190,75 190,85" fill="#adb5bd"/>
+    
+    <!-- API Key Icon (Optional) -->
+    <rect x="220" y="0" width="120" height="160" rx="8" fill="#e9ecef" stroke="#ced4da" stroke-width="2"/>
+    <rect x="250" y="40" width="60" height="10" rx="2" fill="#6c757d"/>
+    <path d="M260 80 C260 70 280 70 280 80 L280 100 L290 100 L290 110 L280 110 L280 120 C280 130 260 130 260 120 L260 80 Z" fill="#6c757d"/>
+    <circle cx="270" cy="90" r="5" fill="#e9ecef"/>
+    
+    <!-- Arrow 2 -->
+    <path d="M360 80 L420 80" stroke="#adb5bd" stroke-width="2"/>
+    <polygon points="420,80 410,75 410,85" fill="#adb5bd"/>
+    
+    <!-- ZIP File Icon -->
+    <rect x="440" y="0" width="120" height="160" rx="8" fill="#e9ecef" stroke="#ced4da" stroke-width="2"/>
+    <path d="M470 30 L530 30 L530 130 L470 130 Z" fill="#6c757d"/>
+    <text x="485" y="90" font-family="Arial" font-size="24" font-weight="bold" fill="#e9ecef">ZIP</text>
+    
+    <!-- Arrow 3 -->
+    <path d="M440 200 L380 200" stroke="#adb5bd" stroke-width="2"/>
+    <polygon points="380,200 390,195 390,205" fill="#adb5bd"/>
+    
+    <!-- Editor Icon -->
+    <rect x="220" y="170" width="120" height="160" rx="8" fill="#e9ecef" stroke="#ced4da" stroke-width="2"/>
+    <rect x="240" y="190" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="240" y="210" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="240" y="230" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="240" y="250" width="60" height="10" rx="2" fill="#6c757d"/>
+    <rect x="240" y="270" width="80" height="10" rx="2" fill="#6c757d"/>
+    <rect x="240" y="290" width="40" height="10" rx="2" fill="#6c757d"/>
+    
+    <!-- Arrow 4 -->
+    <path d="M200 200 L140 200" stroke="#adb5bd" stroke-width="2"/>
+    <polygon points="140,200 150,195 150,205" fill="#adb5bd"/>
+    
+    <!-- Code Icon -->
+    <rect x="0" y="170" width="120" height="160" rx="8" fill="#e9ecef" stroke="#ced4da" stroke-width="2"/>
+    <text x="20" y="210" font-family="monospace" font-size="12" fill="#6c757d">&lt;div&gt;</text>
+    <text x="30" y="230" font-family="monospace" font-size="12" fill="#6c757d">&lt;h1&gt;</text>
+    <text x="40" y="250" font-family="monospace" font-size="12" fill="#6c757d">Title</text>
+    <text x="30" y="270" font-family="monospace" font-size="12" fill="#6c757d">&lt;/h1&gt;</text>
+    <text x="20" y="290" font-family="monospace" font-size="12" fill="#6c757d">&lt;/div&gt;</text>
+    
+    <!-- Sparkles around the flow -->
+    <circle cx="60" cy="-20" r="4" fill="#6c757d" opacity="0.5"/>
+    <circle cx="500" cy="-10" r="3" fill="#6c757d" opacity="0.5"/>
+    <circle cx="550" cy="200" r="5" fill="#6c757d" opacity="0.5"/>
+    <circle cx="-30" cy="250" r="4" fill="#6c757d" opacity="0.5"/>
+    <circle cx="300" cy="350" r="3" fill="#6c757d" opacity="0.5"/>
+  </g>
+</svg>

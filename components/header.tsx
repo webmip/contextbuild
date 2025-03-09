@@ -24,6 +24,16 @@ export function Header() {
             About
           </Link>
           <Link
+            href="/how-to-use"
+            className={`text-sm font-medium ${
+              pathname === '/how-to-use'
+                ? 'text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            How to Use
+          </Link>
+          <Link
             href="/templates"
             className={`text-sm font-medium ${
               pathname === '/templates'
