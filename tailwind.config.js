@@ -24,8 +24,8 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: '#1f09ff',
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: 'hsl(221.2 83.2% 53.3%)',
+          foreground: "hsl(210 40% 98%)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -95,4 +95,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 }
-
