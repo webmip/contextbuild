@@ -49,8 +49,8 @@ export function LogoCarousel() {
   const isDark = resolvedTheme === "dark"
 
   return (
-    <div className="py-10 bg-muted/20">
-      <div className="container">
+    <div className="py-10 bg-muted/20 overflow-hidden">
+      <div className="container px-4 md:px-6">
         <h2 className="text-center text-lg font-medium text-muted-foreground mb-8">
         Use it with your favorite technologies and IDEs.
         </h2>
@@ -70,8 +70,8 @@ export function LogoCarousel() {
 
 function Logo({ name, logo }: { name: string; logo: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-24 px-8 mx-4 rounded-md bg-background border shadow-sm transition-all hover:shadow-md">
-      <div className="relative h-12 w-12 mb-2">
+    <div className="flex flex-col items-center justify-center h-20 sm:h-24 px-6 sm:px-8 mx-3 sm:mx-4 rounded-md bg-background border shadow-sm transition-all hover:shadow-md">
+      <div className="relative h-10 w-10 sm:h-12 sm:w-12 mb-1 sm:mb-2">
         <Image
           src={logo}
           alt={`${name} logo`}
@@ -79,7 +79,7 @@ function Logo({ name, logo }: { name: string; logo: string }) {
           className="object-contain"
         />
       </div>
-      <span className="text-sm font-medium">{name}</span>
+      <span className="text-xs sm:text-sm font-medium">{name}</span>
     </div>
   )
 }

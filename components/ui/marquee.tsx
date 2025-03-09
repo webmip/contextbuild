@@ -34,7 +34,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        "relative flex w-full overflow-hidden [--duration:30s]",
+        "relative flex w-full overflow-hidden max-w-full [--duration:30s]",
         pauseOnHover && "group",
         className
       )}
@@ -43,8 +43,8 @@ export function Marquee({
     >
       {gradient && (
         <>
-          <div className="absolute left-0 top-0 z-10 h-full w-[100px] bg-gradient-to-r from-background to-transparent" />
-          <div className="absolute right-0 top-0 z-10 h-full w-[100px] bg-gradient-to-l from-background to-transparent" />
+          <div className="absolute left-0 top-0 z-10 h-full w-[60px] sm:w-[100px] bg-gradient-to-r from-background to-transparent" />
+          <div className="absolute right-0 top-0 z-10 h-full w-[60px] sm:w-[100px] bg-gradient-to-l from-background to-transparent" />
         </>
       )}
       

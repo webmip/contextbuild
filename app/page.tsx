@@ -4,27 +4,12 @@ import { ArrowRight, FileText } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LogoCarousel } from "@/components/logo-carousel"
+import { Header } from "@/components/header"
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-b">
-        <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
-          <Logo />
-          <nav className="ml-auto flex items-center gap-4">
-            <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              About
-            </Link>
-            <Link href="/how-to-use" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              How to Use
-            </Link>
-            <Link href="/templates" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Templates
-            </Link>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
+      <Header />
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
@@ -127,7 +112,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
+        <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row px-4 md:px-6">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             &copy; {new Date().getFullYear()} CONTEXTBUILD. Made with ❤️ to save AI tokens.
           </p>
