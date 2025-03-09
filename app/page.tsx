@@ -1,16 +1,29 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, FileText } from "lucide-react"
+import { ArrowRight, FileText, Github } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LogoCarousel } from "@/components/logo-carousel"
 import { Header } from "@/components/header"
+import { Announcement, AnnouncementTag, AnnouncementTitle } from "@/components/ui/announcement"
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Header />
       <main className="flex-1">
+        <div className="flex justify-center py-2 bg-muted/20">
+          <Link href="https://github.com/webmip/contextbuild" target="_blank" rel="noopener noreferrer">
+            <Announcement>
+              <AnnouncementTag>
+                <Github className="h-3 w-3" />
+              </AnnouncementTag>
+              <AnnouncementTitle>
+                This project is open source on GitHub - Star it!
+              </AnnouncementTitle>
+            </Announcement>
+          </Link>
+        </div>
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
