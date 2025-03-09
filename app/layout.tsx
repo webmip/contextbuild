@@ -10,8 +10,10 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "CONTEXTBUILD - Create Context Documents for AI Coding",
-  description: "Generate comprehensive documentation for AI-assisted development projects",
-    generator: 'v0.dev'
+  description: "The generation of apps with AI engines is the future, but without a suitable context the cost is exponential. Generate your context for free.",
+  icons: {
+    icon: '/favicon.ico',
+  }
 }
 
 export default function RootLayout({
