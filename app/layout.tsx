@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: "CONTEXTBUILD - AI Context Documents Generator",
     description: "Create comprehensive context documents for AI coding assistants to build your apps with minimal hallucinations.",
     creator: "@contextbuild",
-    images: ["/twitter-image.png"]
+    images: ["/og-image.png"]
   },
   icons: {
     icon: '/favicon.ico',
