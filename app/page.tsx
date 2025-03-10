@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, FileText, Github } from "lucide-react"
+import { ArrowRight, FileText, Github, Linkedin } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LogoCarousel } from "@/components/logo-carousel"
@@ -124,8 +124,28 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-center gap-4 md:h-16 md:flex-row px-4 md:px-6">
+      <footer className="border-t py-6">
+        <div className="container px-4 md:px-6">
+          <div className="flex justify-center items-center gap-4 mb-4">
+            <Link 
+              href="https://github.com/webmip/contextbuild" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Github className="h-5 w-5" />
+              <span className="sr-only">GitHub</span>
+            </Link>
+            <Link 
+              href="https://www.linkedin.com/in/carlosgarciasanchez/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Linkedin className="h-5 w-5" />
+              <span className="sr-only">LinkedIn</span>
+            </Link>
+          </div>
           <p className="text-center text-sm leading-loose text-muted-foreground">
             &copy; {new Date().getFullYear()} CONTEXTBUILD. Made with ❤️ to save AI tokens.
           </p>
