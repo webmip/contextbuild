@@ -220,9 +220,23 @@ const generateWithOpenAI = async (formData: any, apiKey: string): Promise<Record
           })
 
           if (!response.ok) {
-            const errorData = await response.json()
-            console.error(`OpenAI API error for ${docType}:`, errorData)
-            throw new Error(`OpenAI API error: ${errorData.error?.message || "Unknown error"}`)
+            let errorMessage = `OpenAI API error (${response.status}): `;
+            
+            try {
+              const errorData = await response.json();
+              console.error(`OpenAI API error for ${docType}:`, errorData);
+              errorMessage += errorData.error?.message || "Unknown error";
+            } catch (parseError) {
+              console.error(`Failed to parse OpenAI error response for ${docType}:`, parseError);
+              try {
+                const errorText = await response.text();
+                errorMessage += errorText || "Unknown error (could not parse response)";
+              } catch (textError) {
+                errorMessage += "Unknown error (could not read response)";
+              }
+            }
+            
+            throw new Error(errorMessage);
           }
 
           const data = await response.json()
@@ -292,8 +306,27 @@ const generateWithAnthropic = async (formData: any, apiKey: string): Promise<Rec
 export async function POST(request: NextRequest) {
   try {
     console.log("API route called: /api/generate-documents")
-    const body = await request.json()
-    const { formData, provider, apiKey } = body
+    
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      console.error("Failed to parse request body:", parseError);
+      return NextResponse.json(
+        { error: "Invalid request: Could not parse JSON body" },
+        { status: 400 }
+      );
+    }
+    
+    const { formData, provider, apiKey } = body;
+
+    if (!formData) {
+      return NextResponse.json({ error: "Form data is required" }, { status: 400 });
+    }
+
+    if (!provider) {
+      return NextResponse.json({ error: "AI provider is required" }, { status: 400 });
+    }
 
     if (!apiKey) {
       console.error("API key missing in request")
@@ -312,14 +345,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Unsupported AI provider: ${provider}` }, { status: 400 })
     }
 
+    if (!documents || Object.keys(documents).length === 0) {
+      return NextResponse.json(
+        { error: "No documents were generated" },
+        { status: 500 }
+      );
+    }
+
     console.log("Documents generated successfully:", Object.keys(documents))
     return NextResponse.json({ documents })
   } catch (error: any) {
     console.error("Error in API route:", error)
     return NextResponse.json(
-      { error: error.message || "An error occurred during document generation" },
+      { 
+        error: error.message || "An error occurred during document generation",
+        details: error.stack ? error.stack.split('\n').slice(0, 3).join('\n') : undefined
+      },
       { status: 500 },
     )
   }
 }
-

@@ -35,9 +35,29 @@ export const generateAIDocuments = async (
     console.log("API response status:", response.status)
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Failed to parse error response" }))
-      console.error("API error response:", errorData)
-      throw new Error(errorData.error || `API request failed with status ${response.status}`)
+      // Mejorar el manejo de errores para evitar problemas de parsing
+      let errorMessage = `API request failed with status ${response.status}`
+      
+      try {
+        const errorData = await response.json()
+        console.error("API error response:", errorData)
+        if (errorData && errorData.error) {
+          errorMessage = errorData.error
+        }
+      } catch (parseError) {
+        console.error("Failed to parse error response:", parseError)
+        // Si no podemos analizar la respuesta JSON, intentamos obtener el texto
+        try {
+          const errorText = await response.text()
+          if (errorText) {
+            errorMessage = `API error: ${errorText.substring(0, 200)}...`
+          }
+        } catch (textError) {
+          console.error("Failed to get error text:", textError)
+        }
+      }
+      
+      throw new Error(errorMessage)
     }
 
     const data = await response.json()
@@ -48,4 +68,3 @@ export const generateAIDocuments = async (
     throw error
   }
 }
-
