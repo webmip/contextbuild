@@ -192,62 +192,55 @@ const generateWithOpenAI = async (formData: any, apiKey: string): Promise<Record
 
     const documents: Record<string, string> = {}
 
-    // Generate each document in parallel
-    await Promise.all(
-      documentTypes.map(async (docType) => {
-        try {
-          console.log(`Generating ${docType} with OpenAI`)
-          const prompt = generatePrompt(docType, formData)
+    // Generate documents sequentially instead of in parallel to avoid timeouts
+    for (const docType of documentTypes) {
+      try {
+        console.log(`Generating ${docType} with OpenAI`)
+        const prompt = generatePrompt(docType, formData)
 
-          const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey.trim()}`,
-            },
-            body: JSON.stringify({
-              model: "gpt-4o",
-              messages: [
-                {
-                  role: "system",
-                  content: "You are a professional technical writer who creates comprehensive software documentation.",
-                },
-                { role: "user", content: prompt },
-              ],
-              temperature: 0.7,
-              max_tokens: 4000,
-            }),
-          })
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey.trim()}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo", // Using a faster model to reduce timeout risk
+            messages: [
+              {
+                role: "system",
+                content: "You are a professional technical writer who creates comprehensive software documentation.",
+              },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.7,
+            max_tokens: 2500, // Reduced token count to speed up response
+          }),
+        })
 
-          if (!response.ok) {
-            let errorMessage = `OpenAI API error (${response.status}): `;
-            
-            try {
-              const errorData = await response.json();
-              console.error(`OpenAI API error for ${docType}:`, errorData);
-              errorMessage += errorData.error?.message || "Unknown error";
-            } catch (parseError) {
-              console.error(`Failed to parse OpenAI error response for ${docType}:`, parseError);
-              try {
-                const errorText = await response.text();
-                errorMessage += errorText || "Unknown error (could not parse response)";
-              } catch (textError) {
-                errorMessage += "Unknown error (could not read response)";
-              }
-            }
-            
-            throw new Error(errorMessage);
+        if (!response.ok) {
+          let errorMessage = `OpenAI API error (${response.status}): `;
+          
+          try {
+            const errorData = await response.json();
+            console.error(`OpenAI API error for ${docType}:`, errorData);
+            errorMessage += errorData.error?.message || "Unknown error";
+          } catch (parseError) {
+            console.error(`Failed to parse OpenAI error response for ${docType}:`, parseError);
           }
-
-          const data = await response.json()
-          documents[docType] = data.choices[0]?.message?.content || ""
-          console.log(`Successfully generated ${docType}, length: ${documents[docType].length}`)
-        } catch (error) {
-          console.error(`Error generating ${docType}:`, error)
-          throw error
+          
+          throw new Error(errorMessage);
         }
-      }),
-    )
+
+        const data = await response.json()
+        documents[docType] = data.choices[0]?.message?.content || ""
+        console.log(`Successfully generated ${docType}, length: ${documents[docType].length}`)
+      } catch (error) {
+        console.error(`Error generating ${docType}:`, error)
+        // Continue with other documents even if one fails
+        documents[docType] = `# ${docType}\n\nUnable to generate this document. Error: ${error instanceof Error ? error.message : "Unknown error"}`
+      }
+    }
 
     return documents
   } catch (error) {
@@ -270,29 +263,28 @@ const generateWithAnthropic = async (formData: any, apiKey: string): Promise<Rec
     const anthropic = new Anthropic({ apiKey: apiKey.trim() })
     const documents: Record<string, string> = {}
 
-    // Generate each document in parallel
-    await Promise.all(
-      documentTypes.map(async (docType) => {
-        try {
-          console.log(`Generating ${docType} with Anthropic`)
-          const prompt = generatePrompt(docType, formData)
+    // Generate documents sequentially instead of in parallel to avoid timeouts
+    for (const docType of documentTypes) {
+      try {
+        console.log(`Generating ${docType} with Anthropic`)
+        const prompt = generatePrompt(docType, formData)
 
-          const response = await anthropic.messages.create({
-            model: "claude-3-sonnet-20240229",
-            max_tokens: 4000,
-            system: "You are a professional technical writer who creates comprehensive software documentation.",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-          })
+        const response = await anthropic.messages.create({
+          model: "claude-instant-1.2", // Using a faster model to reduce timeout risk
+          max_tokens: 2500, // Reduced token count to speed up response
+          system: "You are a professional technical writer who creates comprehensive software documentation.",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7,
+        })
 
-          documents[docType] = response.content[0]?.text || ""
-          console.log(`Successfully generated ${docType}, length: ${documents[docType].length}`)
-        } catch (error) {
-          console.error(`Error generating ${docType}:`, error)
-          throw error
-        }
-      }),
-    )
+        documents[docType] = response.content[0]?.text || ""
+        console.log(`Successfully generated ${docType}, length: ${documents[docType].length}`)
+      } catch (error) {
+        console.error(`Error generating ${docType}:`, error)
+        // Continue with other documents even if one fails
+        documents[docType] = `# ${docType}\n\nUnable to generate this document. Error: ${error instanceof Error ? error.message : "Unknown error"}`
+      }
+    }
 
     return documents
   } catch (error) {
@@ -302,6 +294,11 @@ const generateWithAnthropic = async (formData: any, apiKey: string): Promise<Rec
 }
 
 // Mejoremos el manejo de errores en la API route
+
+export const config = {
+  runtime: 'edge', // This is optional - use if available in your hosting platform
+  maxDuration: 300, // Set maximum duration to 300 seconds (5 minutes) if supported
+}
 
 export async function POST(request: NextRequest) {
   try {
