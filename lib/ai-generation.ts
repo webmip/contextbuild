@@ -20,51 +20,75 @@ export const generateAIDocuments = async (
       throw new Error("Invalid API key provided")
     }
 
-    const response = await fetch("/api/generate-documents", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        formData,
-        provider,
-        apiKey: apiKey.trim(),
-      }),
-    })
+    // Configurar un timeout más largo para la petición
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutos de timeout
 
-    console.log("API response status:", response.status)
+    try {
+      const response = await fetch("/api/generate-documents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          formData,
+          provider,
+          apiKey: apiKey.trim(),
+        }),
+        signal: controller.signal,
+      });
 
-    if (!response.ok) {
-      // Mejorar el manejo de errores para evitar problemas de parsing
-      let errorMessage = `API request failed with status ${response.status}`
-      
-      try {
-        const errorData = await response.json()
-        console.error("API error response:", errorData)
-        if (errorData && errorData.error) {
-          errorMessage = errorData.error
+      clearTimeout(timeoutId); // Limpiar el timeout si la petición termina antes
+      console.log("API response status:", response.status);
+
+      // Manejar errores específicos por código de estado
+      if (!response.ok) {
+        // Manejar específicamente el error de timeout
+        if (response.status === 504) {
+          console.error("Gateway Timeout: The server took too long to respond");
+          throw new Error("The AI document generation is taking too long. Please try again with a smaller project or try later when the server is less busy.");
         }
-      } catch (parseError) {
-        console.error("Failed to parse error response:", parseError)
-        // Si no podemos analizar la respuesta JSON, intentamos obtener el texto
+        
+        // Para otros errores, intentar obtener información detallada
+        let errorMessage = `API request failed with status ${response.status}`;
+        
+        // Solo intentamos leer el cuerpo UNA VEZ como JSON
+        // Si falla, simplemente usamos el mensaje de error genérico
         try {
-          const errorText = await response.text()
-          if (errorText) {
-            errorMessage = `API error: ${errorText.substring(0, 200)}...`
+          const errorData = await response.json();
+          console.error("API error response:", errorData);
+          if (errorData && errorData.error) {
+            errorMessage = errorData.error;
           }
-        } catch (textError) {
-          console.error("Failed to get error text:", textError)
+        } catch (parseError) {
+          // Si falla el parsing JSON, NO intentamos leer como texto
+          // Simplemente registramos el error y continuamos con el mensaje genérico
+          console.error("Failed to parse error response:", parseError);
         }
+        
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("API response received, document count:", Object.keys(data.documents || {}).length);
+      return data.documents;
+    } finally {
+      clearTimeout(timeoutId); // Asegurarse de limpiar el timeout en cualquier caso
+    }
+  } catch (error: unknown) {
+    // Manejar errores de abort específicamente
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error("Request aborted due to timeout");
+        throw new Error("The AI document generation timed out. Please try again with a smaller project or try later.");
       }
       
-      throw new Error(errorMessage)
+      console.error("Error in generateAIDocuments:", error);
+      throw error;
+    } else {
+      // Si no es un Error estándar, convertirlo a uno
+      console.error("Unknown error in generateAIDocuments:", error);
+      throw new Error("An unexpected error occurred during document generation");
     }
-
-    const data = await response.json()
-    console.log("API response received, document count:", Object.keys(data.documents || {}).length)
-    return data.documents
-  } catch (error) {
-    console.error("Error in generateAIDocuments:", error)
-    throw error
   }
 }

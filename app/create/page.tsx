@@ -630,6 +630,14 @@ export default function CreatePage() {
 
       try {
         console.log("Starting AI document generation process")
+        
+        // Mostrar mensaje de generación en curso con información sobre posibles tiempos de espera
+        toast({
+          title: "Generating Documents",
+          description: "AI document generation has started. This may take up to 2 minutes depending on the complexity of your project.",
+          duration: 10000, // Mostrar por 10 segundos
+        })
+        
         const documents = await generateAIDocuments(formData, aiProvider, apiKey)
         console.log("AI documents generated successfully:", Object.keys(documents))
         setGeneratedDocuments(documents)
@@ -661,10 +669,29 @@ export default function CreatePage() {
         ) // 5 minutes
       } catch (error) {
         console.error("Error generating documents:", error)
+        
+        // Determinar un mensaje de error más específico y útil
+        let errorMessage = "There was an error generating your documents.";
+        
+        if (error instanceof Error) {
+          // Mensajes de error específicos para problemas comunes
+          if (error.message.includes("timeout") || error.message.includes("too long")) {
+            errorMessage = "The AI document generation timed out. Please try again with a smaller project or try later when the server is less busy.";
+          } else if (error.message.includes("API key")) {
+            errorMessage = "There was an issue with your API key. Please check that it's valid and has sufficient credits.";
+          } else if (error.message.includes("rate limit") || error.message.includes("quota")) {
+            errorMessage = "You've reached the rate limit for the AI service. Please try again later.";
+          } else {
+            // Mensaje de error genérico con detalles
+            errorMessage = `Error: ${error.message}`;
+          }
+        }
+        
         toast({
           title: "Error Generating Documents",
-          description: `There was an error generating your documents: ${error instanceof Error ? error.message : "Unknown error"}`,
+          description: errorMessage,
           variant: "destructive",
+          duration: 10000, // Mostrar por más tiempo para que el usuario pueda leerlo
         })
       } finally {
         setIsGenerating(false)
